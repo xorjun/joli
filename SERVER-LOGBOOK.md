@@ -4,6 +4,19 @@ Servers Environment Name : arjnet
 
 Last updated: 2026-05-30
 
+## 2026-05-30
+
+- Created the Joli AI Career Concierge — a chat-first job application platform — as a new standalone service in this repository.
+- Built the full backend in Python/FastAPI with async SQLAlchemy, JWT auth, 13 database models covering German job market specifics (UserProfile with Persönliche Daten, WorkExperience, Education, LanguageSkill with CEFR levels, TechSkill, Certificate, Zeugnis, ChatSession, ChatMessage, JobApplication, GeneratedDocument).
+- Integrated OpenRouter AI with three specialized personas: chat coach (DeepSeek) for conversational profile building, document writer (Claude Sonnet) for DIN 5008 resume/cover letter generation, and Arbeitszeugnis decoder for German coded reference letters.
+- Implemented DIN 5008–compliant DOCX generation (python-docx) for tabellarischer Lebenslauf and Anschreiben, with LibreOffice headless PDF conversion in the Docker image.
+- Built job ad scraper targeting German boards (StepStone, Indeed.de, XING, Arbeitsagentur) with AI-powered requirements extraction.
+- Implemented profile extraction engine that parses AI chat responses for structured profile updates, incrementally building user profiles through conversation.
+- Built React frontend with glass-morphism UI (Tailwind CSS, Framer Motion), split-panel chat interface, JWT auth flow, German/English i18n, and auto-detection of job URLs in chat.
+- Created Docker Compose dev setup (backend :8000, frontend :5173 proxy) and production compose for OCI deployment.
+- Pushed initial commit to GitHub (xorjun/joli) with 53 files and comprehensive codebase.
+- TODO: Deploy to OCI server as `/home/ubuntu/services/joli/`, configure Traefik route for `joli.arjun.cloud` → OCI internal port, and validate end-to-end.
+
 This document records the completed work currently represented in this repository for the two active servers in this stack.
 
 Dates below are based on the most defensible local evidence available in this workspace:

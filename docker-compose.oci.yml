@@ -1,0 +1,25 @@
+services:
+  joli:
+    build: ./backend
+    container_name: joli
+    ports:
+      - "${JOLI_PORT:-8085}:8000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql+psycopg://letta:4d9c46e9128542ffa842389b67b567d0e5ea3751b10e0db3@postgres:5432/joli
+      - APP_ENV=production
+      - DEBUG=false
+    volumes:
+      - joli_outputs:/app/outputs
+      - ./frontend/dist:/app/static
+    networks:
+      - oci-ai-stack_default
+    restart: unless-stopped
+
+volumes:
+  joli_outputs:
+
+networks:
+  oci-ai-stack_default:
+    external: true

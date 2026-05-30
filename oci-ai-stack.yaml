@@ -1,0 +1,132 @@
+http:
+  middlewares:
+    search-basic-auth:
+      basicAuth:
+        users:
+          - SEARCH_BASIC_USERS_PLACEHOLDER
+
+  serversTransports:
+    oci-insecure-transport:
+      insecureSkipVerify: true
+
+  routers:
+    ai-oci-https:
+      entryPoints:
+        - https
+      rule: Host(`ai.arjun.cloud`)
+      service: ai-oci
+      tls:
+        certresolver: letsencrypt
+
+    n8n-oci-https:
+      entryPoints:
+        - https
+      rule: Host(`n8n.arjun.cloud`)
+      service: n8n-oci
+      tls:
+        certresolver: letsencrypt
+
+    llm-oci-https:
+      entryPoints:
+        - https
+      rule: Host(`llm.arjun.cloud`)
+      service: llm-oci
+      tls:
+        certresolver: letsencrypt
+
+    letta-oci-https:
+      entryPoints:
+        - https
+      rule: Host(`letta.arjun.cloud`)
+      service: letta-oci
+      tls:
+        certresolver: letsencrypt
+
+    search-oci-https:
+      entryPoints:
+        - https
+      rule: Host(`search.arjun.cloud`)
+      service: search-oci
+      middlewares:
+        - search-basic-auth
+      tls:
+        certresolver: letsencrypt
+
+    drive-oci-https:
+      entryPoints:
+        - https
+      rule: Host(`drive.arjun.cloud`)
+      service: drive-oci
+      tls:
+        certresolver: letsencrypt
+
+    mcp-oci-https:
+      entryPoints:
+        - https
+      rule: Host(`mcp.arjun.cloud`)
+      service: mcp-oci
+      tls:
+        certresolver: letsencrypt
+
+    compute-oci-https:
+      entryPoints:
+        - https
+      rule: Host(`compute.arjun.cloud`)
+      service: compute-oci
+      tls:
+        certresolver: letsencrypt
+
+    joli-oci-https:
+      entryPoints:
+        - https
+      rule: Host(`joli.arjun.cloud`)
+      service: joli-oci
+      tls:
+        certresolver: letsencrypt
+
+  services:
+    ai-oci:
+      loadBalancer:
+        servers:
+          - url: http://100.101.107.42:3000
+
+    n8n-oci:
+      loadBalancer:
+        servers:
+          - url: http://100.101.107.42:5678
+
+    llm-oci:
+      loadBalancer:
+        servers:
+          - url: http://100.101.107.42:4000
+
+    letta-oci:
+      loadBalancer:
+        servers:
+          - url: http://100.101.107.42:8283
+
+    search-oci:
+      loadBalancer:
+        servers:
+          - url: http://100.101.107.42:18080
+
+    drive-oci:
+      serversTransport: oci-insecure-transport
+      loadBalancer:
+        servers:
+          - url: https://100.101.107.42
+
+    mcp-oci:
+      loadBalancer:
+        servers:
+          - url: http://100.101.107.42:8000
+
+    compute-oci:
+      loadBalancer:
+        servers:
+          - url: http://100.101.107.42:8083
+
+    joli-oci:
+      loadBalancer:
+        servers:
+          - url: http://100.101.107.42:8085

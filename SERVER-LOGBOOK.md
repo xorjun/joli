@@ -19,6 +19,9 @@ Last updated: 2026-05-30
 - Added `joli-oci-https` router and `joli-oci` service to Hetzner Traefik file provider at `/data/coolify/proxy/dynamic/oci-ai-stack.yaml`, routing `joli.arjun.cloud` → `http://100.101.107.42:8085`.
 - Fixed Traefik config rejection caused by `serversTransport` field in wrong YAML location under `drive-oci` service — moved it under `loadBalancer` where Traefik v3 expects it; after the fix, all routes including joli loaded successfully.
 - Validated Joli end-to-end: HTTPS at `https://joli.arjun.cloud` returns 200 on `/health`, serves React SPA on `/`, and API auth on `/api/auth/register` returns valid JWT tokens.
+- Fixed production auth persistence bug in `backend/routers/auth.py`: registration now commits and refreshes the new user row before returning a token, which resolved the reported "can register but cannot login" issue.
+- Hardened auth email matching by normalizing register and login emails to `strip().lower()` so casing and whitespace differences do not break login.
+- Deployed the fix to OCI (`/home/ubuntu/services/joli`), rebuilt the `joli` container, and revalidated `register -> login` successfully on `https://joli.arjun.cloud/api/auth/*`.
 - Created Docker Compose dev setup (backend :8000, frontend :5173 proxy) and production compose for OCI deployment.
 - Pushed initial commit to GitHub (xorjun/joli) with 53 files and comprehensive codebase.
 - TODO: Deploy to OCI server as `/home/ubuntu/services/joli/`, configure Traefik route for `joli.arjun.cloud` → OCI internal port, and validate end-to-end.

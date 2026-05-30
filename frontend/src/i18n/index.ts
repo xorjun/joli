@@ -87,7 +87,7 @@ const en: typeof de = {
 
 i18n.use(initReactI18next).init({
   resources: { de: { translation: de }, en: { translation: en } },
-  lng: "de",
+  lng: "en",
   fallbackLng: "en",
   interpolation: { escapeValue: false },
 });

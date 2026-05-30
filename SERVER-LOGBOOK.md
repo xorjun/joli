@@ -22,6 +22,9 @@ Last updated: 2026-05-30
 - Fixed production auth persistence bug in `backend/routers/auth.py`: registration now commits and refreshes the new user row before returning a token, which resolved the reported "can register but cannot login" issue.
 - Hardened auth email matching by normalizing register and login emails to `strip().lower()` so casing and whitespace differences do not break login.
 - Deployed the fix to OCI (`/home/ubuntu/services/joli`), rebuilt the `joli` container, and revalidated `register -> login` successfully on `https://joli.arjun.cloud/api/auth/*`.
+- Redesigned the Joli frontend UX for a cleaner and more modern chat-first experience: upgraded auth screens, improved visual hierarchy, refreshed chat workspace layout, and added better quick-start prompts.
+- Switched frontend default language behavior to English (`i18n lng=en`, English-first auth/app copy, and English document generation default from chat actions).
+- Built frontend bundle locally, uploaded updated `frontend/dist` to OCI via `/tmp` package transfer (sudo extraction), restarted `joli`, and validated updated SPA HTML and asset hashes on `http://127.0.0.1:8085/`.
 - Created Docker Compose dev setup (backend :8000, frontend :5173 proxy) and production compose for OCI deployment.
 - Pushed initial commit to GitHub (xorjun/joli) with 53 files and comprehensive codebase.
 - TODO: Deploy to OCI server as `/home/ubuntu/services/joli/`, configure Traefik route for `joli.arjun.cloud` → OCI internal port, and validate end-to-end.

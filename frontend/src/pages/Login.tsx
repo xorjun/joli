@@ -19,75 +19,102 @@ export default function Login() {
       await login(email, password);
       navigate("/");
     } catch {
-      setError("Ungültige E-Mail oder Passwort");
+      setError("Invalid email or password");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 p-4">
-      {/* Animated orbs */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }} />
+    <div className="min-h-screen relative overflow-hidden p-4 md:p-8">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-[#ff6b4a]/25 blur-3xl" />
+        <div className="absolute top-[16%] right-[-6rem] h-80 w-80 rounded-full bg-[#0f8b8d]/20 blur-3xl" />
+        <div className="absolute bottom-[-8rem] left-[28%] h-72 w-72 rounded-full bg-[#ffd166]/25 blur-3xl" />
       </div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md relative"
+        className="relative mx-auto flex min-h-[calc(100vh-2rem)] w-full max-w-5xl items-center"
       >
-        <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 shadow-2xl">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-              Joli
-            </h1>
-            <p className="text-slate-400 mt-2 text-sm">KI-Karriere-Concierge</p>
+        <div className="grid w-full gap-6 rounded-3xl border border-white/60 bg-white/60 p-4 shadow-[0_30px_90px_rgba(17,24,39,0.18)] backdrop-blur-xl md:grid-cols-[1.1fr_0.9fr] md:p-6">
+          <div className="hidden rounded-2xl bg-gradient-to-br from-[#1f2937] via-[#0f8b8d] to-[#1f2937] p-8 text-white md:flex md:flex-col md:justify-between">
+            <div>
+              <p className="mb-4 inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/90">
+                Career OS
+              </p>
+              <h1 className="text-4xl font-bold leading-tight">Find the role. Win the interview.</h1>
+              <p className="mt-4 max-w-sm text-sm text-white/80">
+                Joli turns each job post into a focused strategy, tailored resume bullets, and a cover letter that sounds like you.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="rounded-xl bg-white/15 p-3">
+                <p className="text-2xl font-bold">24/7</p>
+                <p className="text-white/70">AI coaching</p>
+              </div>
+              <div className="rounded-xl bg-white/15 p-3">
+                <p className="text-2xl font-bold">DIN</p>
+                <p className="text-white/70">format aware</p>
+              </div>
+            </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg p-3 text-sm">
-                {error}
-              </div>
-            )}
-            <div>
-              <input
-                type="email"
-                placeholder="E-Mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
-              />
+          <div className="rounded-2xl bg-white/80 p-6 md:p-8">
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold text-slate-800">Welcome back</h2>
+              <p className="mt-2 text-sm text-slate-500">Sign in to continue building your next application.</p>
             </div>
-            <div>
-              <input
-                type="password"
-                placeholder="Passwort"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white rounded-lg py-3 font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Wird angemeldet..." : "Anmelden"}
-            </button>
-          </form>
 
-          <p className="text-center mt-6 text-slate-500 text-sm">
-            Noch kein Konto?{" "}
-            <Link to="/register" className="text-indigo-400 hover:text-indigo-300">
-              Registrieren
-            </Link>
-          </p>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                  {error}
+                </div>
+              )}
+
+              <label className="block">
+                <span className="mb-1 block text-sm font-medium text-slate-600">Email</span>
+                <input
+                  type="email"
+                  placeholder="you@domain.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 placeholder-slate-400 outline-none transition focus:border-[#0f8b8d] focus:ring-2 focus:ring-[#0f8b8d]/20"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-1 block text-sm font-medium text-slate-600">Password</span>
+                <input
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 placeholder-slate-400 outline-none transition focus:border-[#0f8b8d] focus:ring-2 focus:ring-[#0f8b8d]/20"
+                />
+              </label>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-xl bg-slate-900 px-4 py-3 font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {loading ? "Signing in..." : "Sign in"}
+              </button>
+            </form>
+
+            <p className="mt-6 text-center text-sm text-slate-500">
+              New here?{" "}
+              <Link to="/register" className="font-semibold text-[#0f8b8d] hover:text-[#0d7c7d]">
+                Create account
+              </Link>
+            </p>
+          </div>
         </div>
       </motion.div>
     </div>

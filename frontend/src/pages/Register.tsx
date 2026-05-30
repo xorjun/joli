@@ -8,7 +8,7 @@ export default function Register() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [uiLanguage, setUiLanguage] = useState("de");
+  const [uiLanguage, setUiLanguage] = useState("en");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -21,82 +21,83 @@ export default function Register() {
       navigate("/");
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { detail?: string } } };
-      setError(axiosErr.response?.data?.detail || "Registrierung fehlgeschlagen");
+      setError(axiosErr.response?.data?.detail || "Registration failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 p-4">
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }} />
+    <div className="min-h-screen relative overflow-hidden p-4 md:p-8">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[-4rem] right-[-4rem] h-72 w-72 rounded-full bg-[#ff6b4a]/20 blur-3xl" />
+        <div className="absolute bottom-[-5rem] left-[-3rem] h-72 w-72 rounded-full bg-[#0f8b8d]/20 blur-3xl" />
       </div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md relative"
+        className="relative mx-auto flex min-h-[calc(100vh-2rem)] w-full max-w-4xl items-center"
       >
-        <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 shadow-2xl">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-              Joli
-            </h1>
-            <p className="text-slate-400 mt-2 text-sm">Konto erstellen</p>
+        <div className="w-full rounded-3xl border border-white/60 bg-white/65 p-6 shadow-[0_30px_90px_rgba(17,24,39,0.18)] backdrop-blur-xl md:p-10">
+          <div className="mb-8 text-center">
+            <h1 className="text-4xl font-bold text-slate-800">Create your Joli account</h1>
+            <p className="mt-2 text-sm text-slate-500">Set up your profile and start generating job-ready applications.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg p-3 text-sm">
+              <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
                 {error}
               </div>
             )}
-            <div>
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium text-slate-600">Email</span>
               <input
                 type="email"
-                placeholder="E-Mail"
+                placeholder="you@domain.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 placeholder-slate-400 outline-none transition focus:border-[#0f8b8d] focus:ring-2 focus:ring-[#0f8b8d]/20"
               />
-            </div>
-            <div>
+            </label>
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium text-slate-600">Password</span>
               <input
                 type="password"
-                placeholder="Passwort (min. 6 Zeichen)"
+                placeholder="At least 6 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 placeholder-slate-400 outline-none transition focus:border-[#0f8b8d] focus:ring-2 focus:ring-[#0f8b8d]/20"
               />
-            </div>
-            <div>
+            </label>
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium text-slate-600">Interface language</span>
               <select
                 value={uiLanguage}
                 onChange={(e) => setUiLanguage(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-indigo-500/50 transition-colors"
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 outline-none transition focus:border-[#0f8b8d] focus:ring-2 focus:ring-[#0f8b8d]/20"
               >
-                <option value="de">Deutsch</option>
                 <option value="en">English</option>
+                <option value="de">German</option>
               </select>
-            </div>
+            </label>
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white rounded-lg py-3 font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-xl bg-slate-900 px-4 py-3 font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? "Wird erstellt..." : "Konto erstellen"}
+              {loading ? "Creating account..." : "Create account"}
             </button>
           </form>
 
-          <p className="text-center mt-6 text-slate-500 text-sm">
-            Bereits registriert?{" "}
-            <Link to="/login" className="text-indigo-400 hover:text-indigo-300">
-              Anmelden
+          <p className="mt-6 text-center text-sm text-slate-500">
+            Already have an account?{" "}
+            <Link to="/login" className="font-semibold text-[#0f8b8d] hover:text-[#0d7c7d]">
+              Sign in
             </Link>
           </p>
         </div>

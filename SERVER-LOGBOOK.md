@@ -14,6 +14,12 @@ Last updated: 2026-05-30
 - Implemented profile extraction engine that parses AI chat responses for structured profile updates, incrementally building user profiles through conversation.
 - Built React frontend with glass-morphism UI (Tailwind CSS, Framer Motion), split-panel chat interface, JWT auth flow, German/English i18n, and auto-detection of job URLs in chat.
 - Created Docker Compose dev setup (backend :8000, frontend :5173 proxy) and production compose for OCI deployment.
+- Pushed initial commit to GitHub (xorjun/joli) with comprehensive codebase.
+- Deployed Joli to OCI production at `/home/ubuntu/services/joli/`: built Docker image with LibreOffice, connected to existing `oci-ai-stack_postgres` using the `joli` database, bound to internal port `100.101.107.42:8085`.
+- Added `joli-oci-https` router and `joli-oci` service to Hetzner Traefik file provider at `/data/coolify/proxy/dynamic/oci-ai-stack.yaml`, routing `joli.arjun.cloud` → `http://100.101.107.42:8085`.
+- Fixed Traefik config rejection caused by `serversTransport` field in wrong YAML location under `drive-oci` service — moved it under `loadBalancer` where Traefik v3 expects it; after the fix, all routes including joli loaded successfully.
+- Validated Joli end-to-end: HTTPS at `https://joli.arjun.cloud` returns 200 on `/health`, serves React SPA on `/`, and API auth on `/api/auth/register` returns valid JWT tokens.
+- Created Docker Compose dev setup (backend :8000, frontend :5173 proxy) and production compose for OCI deployment.
 - Pushed initial commit to GitHub (xorjun/joli) with 53 files and comprehensive codebase.
 - TODO: Deploy to OCI server as `/home/ubuntu/services/joli/`, configure Traefik route for `joli.arjun.cloud` → OCI internal port, and validate end-to-end.
 - TODO: Add `joli` DNS record in Cloudflare dashboard for `arjun.cloud` pointing to Hetzner origin (49.13.3.97) so Cloudflare proxies traffic to Hetzner. Without this, requests to joli.arjun.cloud are 404'd at Cloudflare edge before reaching Hetzner Traefik.

@@ -1,0 +1,44 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8084:8000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql+psycopg://${POSTGRES_USER:-joli}:${POSTGRES_PASSWORD:-joli}@postgres:5432/${POSTGRES_DB:-joli}
+      - APP_ENV=production
+      - DEBUG=false
+    volumes:
+      - joli_outputs:/app/outputs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8085:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-joli}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-joli}
+      POSTGRES_DB: ${POSTGRES_DB:-joli}
+    volumes:
+      - joli_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-joli}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  joli_outputs:
+  joli_pgdata:

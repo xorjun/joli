@@ -50,7 +50,7 @@ async def health():
 
 
 # Serve frontend static files in production
-STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+STATIC_DIR = "/app/static" if os.path.isdir("/app/static") else os.path.join(os.path.dirname(__file__), "static")
 if os.path.isdir(STATIC_DIR):
     app.mount("/assets", StaticFiles(directory=os.path.join(STATIC_DIR, "assets")), name="assets")
     app.mount("/icons.svg", StaticFiles(directory=STATIC_DIR), name="icons")

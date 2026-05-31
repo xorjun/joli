@@ -5,6 +5,23 @@ from ..models import (
 )
 
 
+def _normalize_skill_category(raw_category: str) -> str:
+    category = (raw_category or "").strip().lower()
+    mapping = {
+        "language_programming": "language_programming",
+        "programming_language": "language_programming",
+        "framework": "framework",
+        "tool": "tool",
+        "platform": "platform",
+        "cloud": "platform",
+        "cloud_platform": "platform",
+        "soft": "soft",
+        "soft_skill": "soft",
+        "domain": "domain",
+    }
+    return mapping.get(category, "tool")
+
+
 async def apply_profile_updates(db: AsyncSession, profile: UserProfile, updates: dict) -> list[str]:
     """Apply extracted profile_updates from AI response to the database."""
     changes = []
@@ -71,7 +88,7 @@ async def apply_profile_updates(db: AsyncSession, profile: UserProfile, updates:
                 skill = TechSkill(
                     profile_id=profile.id,
                     name=name,
-                    category=skill_data.get("category", "tool"),
+                    category=_normalize_skill_category(skill_data.get("category", "tool")),
                     proficiency=skill_data.get("proficiency", 3),
                     is_highlighted=skill_data.get("is_highlighted", False),
                 )

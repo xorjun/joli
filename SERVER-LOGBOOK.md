@@ -25,6 +25,10 @@ Last updated: 2026-05-30
 - Redesigned the Joli frontend UX for a cleaner and more modern chat-first experience: upgraded auth screens, improved visual hierarchy, refreshed chat workspace layout, and added better quick-start prompts.
 - Switched frontend default language behavior to English (`i18n lng=en`, English-first auth/app copy, and English document generation default from chat actions).
 - Built frontend bundle locally, uploaded updated `frontend/dist` to OCI via `/tmp` package transfer (sudo extraction), restarted `joli`, and validated updated SPA HTML and asset hashes on `http://127.0.0.1:8085/`.
+- Stabilized AI/runtime behavior with OpenRouter+DeepSeek defaults: updated backend config/document defaults to DeepSeek, expanded English chat system prompt, and ensured OCI `.env` uses `DOCUMENT_MODEL=deepseek/deepseek-chat-v3`.
+- Fixed chat 500 failures in production by removing async lazy-load pitfalls in profile update/completeness logic (`MissingGreenlet`) and by normalizing AI-provided skill categories (e.g., `cloud_platform` -> `platform`) to valid DB enum values.
+- Fixed stale UI serving path in backend: production now prefers mounted `/app/static` over baked `/app/backend/static`, so `frontend/dist` updates are reflected immediately after deploy.
+- Rebuilt `frontend/dist` on OCI with Node 22 container, force-recreated `joli` using `docker compose -f docker-compose.oci.yml up -d --build --force-recreate`, and verified public app now serves `index-CXLEOk3a.js` / `index-DITgQKbw.css` with working chat responses.
 - Created Docker Compose dev setup (backend :8000, frontend :5173 proxy) and production compose for OCI deployment.
 - Pushed initial commit to GitHub (xorjun/joli) with 53 files and comprehensive codebase.
 - TODO: Deploy to OCI server as `/home/ubuntu/services/joli/`, configure Traefik route for `joli.arjun.cloud` → OCI internal port, and validate end-to-end.

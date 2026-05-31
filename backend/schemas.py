@@ -243,7 +243,7 @@ class JobScrapeResponse(BaseModel):
 class DocumentGenerateRequest(BaseModel):
     application_id: str
     doc_type: str  # "resume" or "cover_letter"
-    language: str = "de"
+    language: str = "en"
 
 
 class DocumentOut(BaseModel):

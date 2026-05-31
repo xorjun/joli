@@ -99,7 +99,7 @@ async def generate_document(
     )
     profile = result.scalar_one_or_none()
 
-    language = body.language or (profile.preferred_language if profile else "de")
+    language = body.language or (profile.preferred_language if profile else "en")
     is_resume = body.doc_type == "resume"
 
     # Build AI prompt

@@ -43,7 +43,7 @@ async def create_session(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    session = ChatSession(user_id=user.id, title="Neuer Chat")
+    session = ChatSession(user_id=user.id, title="New Chat")
     db.add(session)
     await db.commit()
     await db.refresh(session)
@@ -84,15 +84,24 @@ async def send_message(
 
     # Get or create profile
     result = await db.execute(
-        select(UserProfile).where(UserProfile.user_id == user.id)
+        select(UserProfile)
+        .where(UserProfile.user_id == user.id)
+        .options(
+            selectinload(UserProfile.work_experiences),
+            selectinload(UserProfile.educations),
+            selectinload(UserProfile.language_skills),
+            selectinload(UserProfile.tech_skills),
+            selectinload(UserProfile.certificates),
+            selectinload(UserProfile.zeugnisse),
+        )
     )
     profile = result.scalar_one_or_none()
     if not profile:
-        profile = UserProfile(user_id=user.id, preferred_language=user.ui_language)
+        profile = UserProfile(user_id=user.id, preferred_language=(user.ui_language or "en"))
         db.add(profile)
         await db.flush()
 
-    language = profile.preferred_language or "de"
+    language = profile.preferred_language or user.ui_language or "en"
 
     # Save user message
     user_msg = ChatMessage(

@@ -1,4 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from ..models import (
     UserProfile, WorkExperience, Education, LanguageSkill, TechSkill, Certificate
 )
@@ -20,6 +21,8 @@ async def apply_profile_updates(db: AsyncSession, profile: UserProfile, updates:
 
     # Work experience
     if "work_experience" in updates:
+        existing_experiences = profile.__dict__.get("work_experiences") or []
+        base_order_index = len(existing_experiences)
         for exp_data in updates["work_experience"]:
             exp = WorkExperience(
                 profile_id=profile.id,
@@ -31,9 +34,10 @@ async def apply_profile_updates(db: AsyncSession, profile: UserProfile, updates:
                 is_current=exp_data.get("is_current", False),
                 description_md=exp_data.get("description_md", ""),
                 achievements=exp_data.get("achievements", []),
-                order_index=len(profile.work_experiences) if hasattr(profile, 'work_experiences') else 0,
+                order_index=base_order_index,
             )
             db.add(exp)
+            base_order_index += 1
             changes.append("work_experience")
 
     # Education
@@ -53,7 +57,14 @@ async def apply_profile_updates(db: AsyncSession, profile: UserProfile, updates:
 
     # Tech skills (avoid duplicates by name)
     if "tech_skills" in updates:
-        existing_names = {s.name.lower() for s in profile.tech_skills} if hasattr(profile, 'tech_skills') else set()
+        existing_skill_rows = await db.execute(
+            select(TechSkill.name).where(TechSkill.profile_id == profile.id)
+        )
+        existing_names = {
+            (name or "").strip().lower()
+            for name in existing_skill_rows.scalars().all()
+            if name
+        }
         for skill_data in updates["tech_skills"]:
             name = skill_data.get("name", "").strip()
             if name and name.lower() not in existing_names:
@@ -70,7 +81,14 @@ async def apply_profile_updates(db: AsyncSession, profile: UserProfile, updates:
 
     # Language skills
     if "language_skills" in updates:
-        existing_langs = {s.language.lower() for s in profile.language_skills} if hasattr(profile, 'language_skills') else set()
+        existing_lang_rows = await db.execute(
+            select(LanguageSkill.language).where(LanguageSkill.profile_id == profile.id)
+        )
+        existing_langs = {
+            (lang or "").strip().lower()
+            for lang in existing_lang_rows.scalars().all()
+            if lang
+        }
         for lang_data in updates["language_skills"]:
             lang = lang_data.get("language", "").strip()
             if lang and lang.lower() not in existing_langs:
@@ -105,21 +123,28 @@ def calculate_profile_completeness(profile: UserProfile) -> int:
     score = 0
     max_score = 0
 
+    work_experiences = profile.__dict__.get("work_experiences") or []
+    educations = profile.__dict__.get("educations") or []
+    language_skills = profile.__dict__.get("language_skills") or []
+    tech_skills = profile.__dict__.get("tech_skills") or []
+    certificates = profile.__dict__.get("certificates") or []
+    zeugnisse = profile.__dict__.get("zeugnisse") or []
+
     checks = [
         (bool(profile.full_name), 5),
         (bool(profile.street or profile.city), 3),
         (bool(profile.phone or profile.email), 3),
         (bool(profile.date_of_birth), 2),
         (bool(profile.nationality), 2),
-        (len(profile.work_experiences) > 0 if hasattr(profile, 'work_experiences') else False, 15),
-        (len(profile.educations) > 0 if hasattr(profile, 'educations') else False, 10),
-        (len(profile.language_skills) > 0 if hasattr(profile, 'language_skills') else False, 5),
-        (len(profile.tech_skills) > 0 if hasattr(profile, 'tech_skills') else False, 15),
-        (len(profile.tech_skills) >= 5 if hasattr(profile, 'tech_skills') else False, 10),
-        (len(profile.certificates) > 0 if hasattr(profile, 'certificates') else False, 5),
+        (len(work_experiences) > 0, 15),
+        (len(educations) > 0, 10),
+        (len(language_skills) > 0, 5),
+        (len(tech_skills) > 0, 15),
+        (len(tech_skills) >= 5, 10),
+        (len(certificates) > 0, 5),
         (bool(profile.salary_expectation), 5),
         (bool(profile.notice_period), 5),
-        (len(profile.zeugnisse) > 0 if hasattr(profile, 'zeugnisse') else False, 5),
+        (len(zeugnisse) > 0, 5),
         (bool(profile.preferred_language), 5),
         (len(profile.target_countries) > 0, 5),
     ]

@@ -55,10 +55,17 @@ if os.path.isdir(STATIC_DIR):
     app.mount("/assets", StaticFiles(directory=os.path.join(STATIC_DIR, "assets")), name="assets")
     app.mount("/icons.svg", StaticFiles(directory=STATIC_DIR), name="icons")
 
+    def _serve_file(path: str):
+        headers = {}
+        if path.endswith(".html"):
+            # Always fetch fresh index HTML so new asset hashes are picked up after deploys.
+            headers = {"Cache-Control": "no-store, no-cache, must-revalidate"}
+        return FileResponse(path, headers=headers)
+
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
         file_path = os.path.join(STATIC_DIR, full_path)
         if os.path.isfile(file_path):
-            return FileResponse(file_path)
-        return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+            return _serve_file(file_path)
+        return _serve_file(os.path.join(STATIC_DIR, "index.html"))
 
